@@ -5,31 +5,31 @@ Overall, this project demonstrates robust system design, cloud-native patterns, 
 
 ---
 
-## Technologies & Patterns Used
+## Technologies & Patterns Used (What I Learned)
 
-1. **Spring Boot** – Microservice foundation with embedded Tomcat, auto-configuration, and easy REST setup.
-2. **Feign Client** – Declarative REST clients for synchronous inter-service communication. I implemented error handling, logging, timeouts, and retries to make calls robust and maintainable.
-3. **Spring Cloud AWS SQS** – Asynchronous messaging layer for decoupled events between services using message brokers. Published and consumed messages via SQS queues using `SqsTemplate` and `@SqsListener`.
-4. **AWS CloudWatch Logs** – Centralized logging of service-level events, application errors, and custom metrics with live tail, retention, querying, and alerting via CloudWatch Logs Insights.
-5. **Server-Sent Events (SSE)** – Real-time unidirectional streaming from server to client for notifying Angular of new events. Set up endpoints that produce `text/event-stream` using `SseEmitter`.
-6. **Layered Architecture** – Simple MVC with clean separation of Controllers, Service, Repository, Model (DTO, Entity, Request), Messaging, and Client layers.
-7. **Decentralized Data Stores** – Each microservice has its own database, enforcing bounded contexts and data ownership.
-8. **Event-Driven Design** – SQS connects the order and notification flow, supporting resiliency, fault tolerance, and scalability.
+1. **Spring Boot:** Leveraged Spring Boot’s auto-configuration and embedded Tomcat to rapidly build and structure each microservice, improving modularity and making testing and deployment straightforward.
 
----
+2. **Feign Client:** Implemented declarative REST communication with timeout, retry, logging, and error decoding support. This allowed synchronous interactions (like stock checks and decrements) while maintaining an overall asynchronous workflow for resilience and clarity.
 
-## What I Learned
+3. **AWS CloudWatch Logs & Insights:** Centralized logging across all services using CloudWatch. I configured log groups, streams, and retention policies, then used CloudWatch Insights to query data, build dashboards, tail live logs, and set alerts—significantly enhancing monitoring and operational visibility.
 
-* **Declarative clients with Feign** Continued using REST for synchronous inventory updates, while achieving full async flow from order creation to processing result.
-* **Message-based decoupling using SQS** ensures services don't block or fail due to downstream downtime, and scale independently — emphasizing the value of event-based triggers, crucial for cloud-native resiliency. Also applying this "Multiple Producers, Single Consumer (MPSC)" pattern used for distributed queues.
-* **Real-time updates via SSE** provided a lightweight alternative to WebSockets, ideal for push-only scenarios like notifications.
-* **Structuring microservices** by feature and layer increased maintainability and clarity, essential for larger systems.
-* **Hands‑on AWS integration**, including SQS queue configuration, IAM permissions, and region setup via Spring Cloud AWS and CloudWatch Logs configuration.
-* **Centralized logging:** I learned how to send logs from my microservices to CloudWatch, define log groups/streams, implement metrics filters, and set up retention and alarm policies.
-* **Log analysis with CloudWatch Logs Insights** taught me to query and filter logs, create live tail sessions, extract custom metrics, build dashboards, and set alerts for error patterns and performance anomalies.
-* **Error handling & retry patterns:** Handled failures from downstream inventory (e.g. 404, out-of-stock) and optionally rerouted events or triggered alerts.
-* **Improved troubleshooting and observability:** I can now pinpoint service errors, correlate logs across microservices, which reduces mean time to resolution (MTTR).
-* **End-to-end flow** from UI → sync lookup → logs → async event → UI update delivered valuable insight into modern full-stack microservice design.
+4. **Spring Cloud AWS SQS (@SqsListener + SqsTemplate):** Adopted Spring Cloud AWS SQS starter to create a fully asynchronous, event-driven architecture. Producers push events with SqsTemplate, and services now use @SqsListener to process background jobs. This decoupling improved fault tolerance, achieved independent scaling, and aligned with cloud-native best practices.
+
+5. **Server-Sent Events (SSE):** Used SseEmitter to push real-time notifications from backend to Angular, selecting SSE for its simplicity and suitability in server→client streaming, without the complexity overhead of WebSockets.
+
+6. **Layered Architecture:** Maintained clear separation between Controllers, Services, Repositories, DTOs, Messaging handlers, and Feign clients. This improved testability, readability, and allowed features to scale with minimal interdependency.
+
+7. **Error Handling & Retry Patterns:** Built robust handling for downstream failures (e.g., 404s or out-of-stock), routing problem messages to dead-letter queues or generating alerts. This ensured service stability and graceful recovery.
+
+8. **Observability & Debugging:** By aligning log correlation across services and combining it with queue visibility and metrics, I drastically improved traceability. Now I can trace an order’s lifecycle and rapidly identify issues, lowering MTTR.
+
+9. **End-to-End Workflow:** Designed a practical pipeline: Angular UI → Feign-based stock check → order-created event → background processing → order-processed event → user notification. This showcases a full-stack, microservices architecture demonstrating synchronization, decoupling, and real-time updates.
+
+10. **Decentralized Data Stores:** Ensured each service owns its own PostgreSQL database, reinforcing bounded contexts and service autonomy. This approach supports clean data ownership and adaptive scaling strategies.
+
+11. **Event‑Driven Architecture:** Expanded event-driven capabilities with SQS to orchestrate communication flows, improving scalability, fault tolerance, and alignment with modern cloud patterns.
+
+12. **Hands‑On AWS Integration:** Configured AWS components—SQS queues, IAM permissions, CloudWatch setup—through Spring Cloud AWS and AWS SDK. These integrations reinforced practical skills in cloud-based architecture and system observability.
 
 ---
 
